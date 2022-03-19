@@ -22,9 +22,10 @@ img = rescaleFrame(frame)
 ha = int(img.shape[0])
 wa = int(img.shape[1])
 
+fourcc = cv.VideoWriter_fourcc(*'XVID')
+out = cv.VideoWriter('vv.avi', fourcc, 20.0, (wa, ha))
 
-fourcc = cv.VideoWriter_fourcc(*"MJPG")
-out = cv.VideoWriter('vv.avi', fourcc , 6.0 , (wa,ha))
+
 
 wa = int(wa * 0.75)
 ha = int(ha * 0.75)
@@ -104,14 +105,28 @@ while (fixed_time > timing):
     out.write(bordered)
 
 
+
     cv.imshow('Detected Faces' , bordered)
 
-    if(label>=0 and confidence>65):
+    if(label>=0 and confidence>65 and c==0):
+        c=1
+        l_label = label
+
+    elif(label == l_label and confidence > 65 and c>0):
         c=c+1
+    
+    elif(confidence > 65):
+        l_label = label
+        c=1
+
+
+    if cv.waitKey(1) & 0xFF == ord('a'):
+        break
     
 
 if(c>10):
     print(True)
+    print(people[label])
 
 else:
     print(False)
